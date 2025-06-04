@@ -6,11 +6,11 @@ on:
       - '**.mmd'
 
 jobs:
-  build-diagrams:
+  render-mermaid:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -18,23 +18,29 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install mermaid-cli
+      - name: Install Mermaid CLI
         run: npm install -g @mermaid-js/mermaid-cli
 
-      - name: Generate diagrams
+      - name: Generate Mermaid Diagrams
         run: |
           mkdir -p diagrams
+          echo '{"args":["--no-sandbox","--disable-setuid-sandbox"]}' > puppeteer-config.json
           for file in $(find . -name '*.mmd'); do
             filename=$(basename "$file" .mmd)
-            mmdc -i "$file" -o "diagrams/$filename.svg"
+            mmdc -i "$file" -o "diagrams/$filename.svg" --puppeteerConfig puppeteer-config.json
           done
 
-      - name: Commit diagrams
+      - name: Commit and Push Diagrams
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add diagrams/
-          git commit -m "Auto-generate Mermaid diagrams"
-          git push
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Auto-generate Mermaid diagrams"
+            git push
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
