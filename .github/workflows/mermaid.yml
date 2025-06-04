@@ -27,7 +27,7 @@ jobs:
           echo '{"args":["--no-sandbox","--disable-setuid-sandbox"]}' > puppeteer-config.json
           for file in $(find . -name '*.mmd'); do
             filename=$(basename "$file" .mmd)
-            mmdc -i "$file" -o "diagrams/$filename.svg" --puppeteerConfig puppeteer-config.json
+            mmdc -i "$file" -o "diagrams/$filename.svg" --puppeteerConfigFile puppeteer-config.json
           done
 
       - name: Commit and Push Diagrams
@@ -43,4 +43,5 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
