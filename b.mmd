@@ -1,0 +1,24 @@
+classDiagram
+    class Carro {
+        -modelo: String
+        -ano: Int
+        -fabricante: String
+        -crlv: String
+    }
+
+    class Cliente {
+        -cpf: String
+        -nome: String
+        -nacionalidade: String
+        -data_nascimento: Date
+    }
+
+    class Concessionaria {
+        -nome: String
+        -id: String
+    }
+
+    Cliente "1" --> "muitos" Carro : possui >
+    Concessionaria "1" --> "muitos" Carro : oferece >
+    Cliente "muitos" --> "muitos" Concessionaria : cadastrado em >
+
